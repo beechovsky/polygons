@@ -44,8 +44,8 @@ var runTime = document.getElementById("runTime");
 runTime.innerHTML = 0;
 var numMoves = document.getElementById("numMoves");
 numMoves.innerHTML = 0;
-var goodMoves = document.getElementById("goodMoves");
-goodMoves.innerHTML = 0;
+//var goodMoves = document.getElementById("goodMoves");
+//goodMoves.innerHTML = 0;
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -375,8 +375,8 @@ window.reset = function(){
 	runTime.innerHTML = 0;
 	var numMoves = document.getElementById("numMoves");
 	numMoves.innerHTML = 0;
-	var goodMoves = document.getElementById("numMoves");
-	goodMoves.innerHTML = 0;
+	//var goodMoves = document.getElementById("numMoves");
+	//goodMoves.innerHTML = 0;
 
 	STATS = {
 		steps:0,
@@ -703,6 +703,8 @@ function step(){
 		if(d.shaking) shaking.push(d);
 	}
 
+	// initial number of shakers
+	var numShakers = shaking.length;
 	// Pick a random shaker
 	if(shaking.length==0) return;
 	var shaker = shaking[Math.floor(Math.random()*shaking.length)];
@@ -746,6 +748,9 @@ function step(){
 		shaker.gotoY = spot.y;
 		// increment numMoves
 		numMoves.innerHTML++;
+		//if(shaking.pop() && shaking.length < numShakers){
+		//	goodMoves.innerHTML++;
+		//}
 	}
 	else{
 		// Find the furthest empty spot and move there
@@ -777,6 +782,10 @@ function step(){
 			shaker.gotoY = closestSpot.y;
 			// increment numMoves
 			numMoves.innerHTML++;
+			// track successful moves
+			//if(shaking.pop() && shaking.length < numShakers){
+			//	goodMoves.innerHTML++;
+			//}
 		}
 	}
 
