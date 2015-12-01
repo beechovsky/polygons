@@ -4,7 +4,14 @@
 	var Mouse = {
 		x: 0,
 		y: 0,
-		pressed: false
+        origX: 0, //Added variables for original coordinates for click point
+        origY: 0,
+        wasBox: false, //Added variable for detecting if there was a box select on the previous frame.
+		pressed: false,
+        boxFinished: false,
+        middleClick: false,
+        finalX: 0,  //Added variables for storing the last location before lifting up on the mouse.
+        finalY: 0
 	};
 	exports.Mouse = Mouse;
 
@@ -47,7 +54,15 @@
 	}
 	
 	canvas.addEventListener("mousedown",function(event){
+        if(event.button == 1){
+            Mouse.middleClick = true;  
+            //alert("Middle mouse clicked");
+        }
 		updateCursor();
+        //Added recording coordinates of original click
+        //alert("You pressed button: " + event.button);
+        Mouse.origX = event.pageX;
+        Mouse.origY = event.pageY;
 	    Mouse.pressed = true;
 	    onMouseMove(event);
 	    event.preventDefault();
