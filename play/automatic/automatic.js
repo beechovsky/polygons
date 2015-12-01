@@ -87,6 +87,13 @@ function Draggable(x,y){
 	self.y = y;
 	self.gotoX = x;
 	self.gotoY = y;
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //Never ending sharks - Bryan 
+    //Variables needed for box select code
+    self.distFromMouseX = 0;
+    self.distFromMouseY = 0;
+    self.emptiesSelf = [];
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	var offsetX, offsetY;
 	var pickupX, pickupY;
@@ -153,6 +160,71 @@ function Draggable(x,y){
 	}
 
 	var lastPressed = false;
+    
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //Never ending sharks - Bryan
+    //Added code for box select movement functions, adapted from existing and Jeff's code
+    self.dragUpdate = function(){
+        self.x = Mouse.x - self.distFromMouseX;
+        self.y = Mouse.y - self.distFromMouseY;
+    }
+    
+    self.boxMoveClosest = function(){
+        //Modified Jeff's code for putting down box select guys
+        // Find the closest empty spot and move there
+		// First find and store the distances between each empty spot and the current shaker
+		var distances = [];
+		for(var i = 0; i < emptiesSelf.length; i ++){
+			var distanceX = Math.abs(emptiesSelf[i].x - self.x);
+			var distanceY = Math.abs(emptiesSelf[i].y - self.y);
+			var totalDistance = distanceX + distanceY;
+			distances.push(totalDistance);
+		}
+		// This requires the following helper function:
+		function indexOfSmallest(a) {
+			var smallest = a[0];
+			for (var i = 1; i < a.length; i++) {
+				if (a[i] < a[smallest]) smallest = i;
+			}
+			return smallest;
+		}
+		var smallestDistance = indexOfSmallest(distances);
+        
+        var closestSpot = emptiesSelf[smallestDistance];
+        self.x = closestSpot.x;
+        self.y = closestSpot.y;
+    }
+    
+    self.updateEmpty = function(){
+       emptiesSelf = [];
+       for(var x=0;x<GRID_SIZE;x++){
+		  for(var y=0;y<GRID_SIZE;y++){
+
+			var spot = {
+				x: (x+0.5)*TILE_SIZE,
+				y: (y+0.5)*TILE_SIZE
+			}
+
+			var spotTaken = false;
+			for(var i=0;i<draggables.length;i++){
+				var d = draggables[i];
+				var dx = d.x-spot.x;
+				var dy = d.y-spot.y;
+				if(dx*dx+dy*dy<10 && !d.dragged){
+					spotTaken=true;
+					break;
+				}
+			}
+
+			if(!spotTaken){
+				emptiesSelf.push(spot);
+			}
+
+		  }
+	   }   
+    }
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 	self.update = function(){
 
 		// Shakiness? //shaking = unhappy
@@ -431,94 +503,98 @@ window.reset = function(){
 window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	// NEVER ENDING SHARKS
-	//var runTime = document.getElementById("runTime");
-	//runTime.innerHTML = 0;
-	//var numMoves = document.getElementById("numMoves");
-	//numMoves.innerHTML = 0;
-	//var goodMoves = document.getElementById("goodMoves");
-	//goodMoves.innerHTML = 0;
-	var t0 = 0;
-	var t1 = 0;
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+    if(Mouse.middleClick){
+        
+    }else{
+	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	   // NEVER ENDING SHARKS
+	   //var runTime = document.getElementById("runTime");
+	   //runTime.innerHTML = 0;
+	   //var numMoves = document.getElementById("numMoves");
+	   //numMoves.innerHTML = 0;
+	   //var goodMoves = document.getElementById("goodMoves");
+	   //goodMoves.innerHTML = 0;
+	   var t0 = 0;
+	   var t1 = 0;
+	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	// Is Stepping?
-	if(START_SIM){
-		step();
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// NEVER ENDING SHARKS
-		t0 = window.performance.now();
-		runTime.innerHTML = Math.round(t0 / 1000) - 1;
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	}
+	   // Is Stepping?
+	   if(START_SIM){
+		  step();
+		  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		  // NEVER ENDING SHARKS
+		  t0 = window.performance.now();
+		  runTime.innerHTML = Math.round(t0 / 1000) - 1;
+		  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	   }
 
-	// Draw
-	Mouse.isOverDraggable = IS_PICKING_UP;
-	ctx.clearRect(0,0,canvas.width,canvas.height);
-	for(var i=0;i<draggables.length;i++){
-		var d = draggables[i];
-		d.update();
+	   // Draw
+	   Mouse.isOverDraggable = IS_PICKING_UP;
+	   ctx.clearRect(0,0,canvas.width,canvas.height);
+	   for(var i=0;i<draggables.length;i++){
+		  var d = draggables[i];
+		  d.update();
 
-		if(d.shaking || window.PICK_UP_ANYONE){
-			var dx = Mouse.x-d.x;
-			var dy = Mouse.y-d.y;
-			if(Math.abs(dx)<PEEP_SIZE/2 && Math.abs(dy)<PEEP_SIZE/2){
+		  if(d.shaking || window.PICK_UP_ANYONE){
+			 var dx = Mouse.x-d.x;
+			 var dy = Mouse.y-d.y;
+			 if(Math.abs(dx)<PEEP_SIZE/2 && Math.abs(dy)<PEEP_SIZE/2){
 				Mouse.isOverDraggable = true;
-			}
-		}
+			 }
+		  }
 
-	}
-	for(var i=0;i<draggables.length;i++){
-		draggables[i].draw();
-	}
+	   }
+	   for(var i=0;i<draggables.length;i++){
+		  draggables[i].draw();
+	   }
 
-	// Done stepping?
-	if(isDone()){
-		doneBuffer--;
+	   // Done stepping?
+	   if(isDone()){
+		  doneBuffer--;
 
 
-		if(doneBuffer==0){
-			doneAnimFrame = 30;
-			window.START_SIM = false;
-			console.log("DONE");
-			writeStats();
-		}
-	}else if(START_SIM){
+		  if(doneBuffer==0){
+			 doneAnimFrame = 30;
+			 window.START_SIM = false;
+			 console.log("DONE");
+			 writeStats();
+		  }
+	   }else if(START_SIM){
 
-		STATS.steps++;
-		doneBuffer = 30;
+		  STATS.steps++;
+		  doneBuffer = 30;
 
-		// Write stats
-		writeStats();
+		  // Write stats
+		  writeStats();
 
-	}
-	if(doneAnimFrame>0){
-		doneAnimFrame--;
-		var opacity = ((doneAnimFrame%15)/15)*0.2;
-		canvas.style.background = "rgba(255,255,255,"+opacity+")";
-	}else{
-		canvas.style.background = "none";
-		//t1 = window.performance.now();
-		//var time = Math.round((t1-t0) * 1000);
-		//runTime.innerHTML = 'Run time was ' + time + ' seconds';
-	}
+	   }
+	   if(doneAnimFrame>0){
+		  doneAnimFrame--;
+		  var opacity = ((doneAnimFrame%15)/15)*0.2;
+		  canvas.style.background = "rgba(255,255,255,"+opacity+")";
+	   }else{
+		  canvas.style.background = "none";
+		  //t1 = window.performance.now();
+		  //var time = Math.round((t1-t0) * 1000);
+		  //runTime.innerHTML = 'Run time was ' + time + ' seconds';
+	   }
 
-	// Mouse
-	lastMouseX = Mouse.x;
-	lastMouseY = Mouse.y;
+	   // Mouse
+	   lastMouseX = Mouse.x;
+	   lastMouseY = Mouse.y;
 
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	// NEVER ENDING SHARKS
-	// Movement type toggle button
-	if(RANDOM_MOVE){
-		document.getElementById("random_moving").classList.add("random");
-	}else{
-		document.getElementById("random_moving").classList.remove("random");
-	}
+	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	   // NEVER ENDING SHARKS
+	   // Movement type toggle button
+	   if(RANDOM_MOVE){
+		  document.getElementById("random_moving").classList.add("random");
+	   }else{
+		  document.getElementById("random_moving").classList.remove("random");
+	   }
 
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
 
 }
 var segregation_text = document.getElementById("segregation_text");
