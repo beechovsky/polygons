@@ -123,6 +123,8 @@ function muteSound(name){
 // NEVER ENDING SHARKS
 //Adds the sounds used to the program
 addSound(0,"../music/background.mp3");
+addSound(1,"../music/start.mp3");
+addSound(2,"../music/end.mp3");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 var IS_PICKING_UP = false;
@@ -548,6 +550,12 @@ window.reset = function(){
 
 }
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//variable to check when simulation is complete
+var oldSim = START_SIM;
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
@@ -645,6 +653,18 @@ window.render = function(){
 	   var t1 = 0;
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS   
+	//Keeps track of last START_SIM and plays sounds if it toggles from false to true
+	if(START_SIM == true && old_sim == false){
+		sounds[1].play();
+	}
+	
+	
+	old_sim = START_SIM;
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	   // Is Stepping?
 	   if(START_SIM){
 		  step();
@@ -681,6 +701,11 @@ window.render = function(){
 
 
 		  if(doneBuffer==0){
+		  	 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			 // NEVER ENDING SHARKS   
+			 //plays a sound when the simulation completes
+		 	 sounds[2].play();
+			 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			 doneAnimFrame = 30;
 			 window.START_SIM = false;
 			 console.log("DONE");
