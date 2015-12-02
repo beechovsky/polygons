@@ -119,6 +119,12 @@ function muteSound(name){
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Adds the sounds used to the program
+addSound(0,"../music/background.mp3");
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 var IS_PICKING_UP = false;
 var lastMouseX, lastMouseY;
 
@@ -1010,5 +1016,10 @@ window.IS_IN_SIGHT = true;
 // !!!!!!!!!!!!!!!!!!!!!!!!
 
 window.onload=function(){
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS
+	//Plays the background music when the page loads
+	sounds[0].play();
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	reset();
 }
