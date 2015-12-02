@@ -125,6 +125,7 @@ function muteSound(name){
 addSound(0,"../music/background.mp3");
 addSound(1,"../music/start.mp3");
 addSound(2,"../music/end.mp3");
+addSound(3,"../music/grab.mp3");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 var IS_PICKING_UP = false;
@@ -148,6 +149,11 @@ function Draggable(x,y){
 	var offsetX, offsetY;
 	var pickupX, pickupY;
 	self.pickup = function(){
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// NEVER ENDING SHARKS
+		sounds[3].play();
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		IS_PICKING_UP = true;
 
