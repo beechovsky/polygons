@@ -126,6 +126,7 @@ addSound(0,"../music/background.mp3");
 addSound(1,"../music/start.mp3");
 addSound(2,"../music/end.mp3");
 addSound(3,"../music/grab.mp3");
+addSound(4,"../music/sad.mp3");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 var IS_PICKING_UP = false;
@@ -281,7 +282,24 @@ function Draggable(x,y){
     }
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
+    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// Never Ending Sharks
+	//variable for maintaining state of a polygon
+  	var was_shaking = false;
+  	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 	self.update = function(){
+
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// Never Ending Sharks
+		//keeps track of whether a polygon was shaking
+		if(self.shaking){
+			was_shaking = true;
+		}
+		else{
+			was_shaking = false;
+		}
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		// Shakiness? //shaking = unhappy
 		self.shaking = false;
@@ -364,6 +382,13 @@ function Draggable(x,y){
 		        if (self.color == "square") {
 		            if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
 		                self.shaking = true;
+		                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				 // Never Ending Sharks
+				 //plays a sound when polygon begins to shake
+		                if(!was_shaking && !START_SIM){
+					 sounds[4].play();
+				}
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		            }
 		        }
 		    }
@@ -372,6 +397,13 @@ function Draggable(x,y){
 		        if (self.color == "triangle") {
 		            if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
 		                self.shaking = true;
+		                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				 // Never Ending Sharks
+				 //plays a sound when polygon begins to shake
+		                if(!was_shaking && !START_SIM){
+					 sounds[4].play();
+				}
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		            }
 		        }
 		    }
@@ -379,6 +411,13 @@ function Draggable(x,y){
 		        if (self.color == "circle") {
 		            if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
 		                self.shaking = true;
+		                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				 // Never Ending Sharks
+				 //plays a sound when polygon begins to shake
+		                if(!was_shaking && !START_SIM){
+					 sounds[4].play();
+				}
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		            }
 		        }
 		    }
