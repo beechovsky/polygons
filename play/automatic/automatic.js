@@ -77,6 +77,23 @@ addAsset("sadCircle","../img/sad_circle.png");
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Code to allow easy addition and playing of sounds
+var sounds = {};
+function addSound(id,src){
+	sounds[id] = new Audio(src);
+	if(id == 0){
+		sounds[id].loop = true;
+	}
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
 var IS_PICKING_UP = false;
 var lastMouseX, lastMouseY;
 
