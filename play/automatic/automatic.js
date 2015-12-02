@@ -7,7 +7,7 @@ var stats_ctx = stats_canvas.getContext("2d");
 // Never Ending Sharks
 // Variables for the new sliders
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-var NONCONFORM_square = 1.00; 
+var NONCONFORM_square = 1.00;
 var BIAS_square = 0.33;
 var NONCONFORM_triangle = 1.00;
 var BIAS_triangle = 0.33;
@@ -136,14 +136,14 @@ var IS_PICKING_UP = false;
 var lastMouseX, lastMouseY;
 
 function Draggable(x,y){
-	
+
 	var self = this;
 	self.x = x;
 	self.y = y;
 	self.gotoX = x;
 	self.gotoY = y;
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //Never ending sharks - Bryan 
+    //Never ending sharks - Bryan
     //Variables needed for box select code
     self.distFromMouseX = 0;
     self.distFromMouseY = 0;
@@ -151,10 +151,10 @@ function Draggable(x,y){
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	var offsetX, offsetY;
-    self.pickupX = 0; 
+    self.pickupX = 0;
     self.pickupY = 0;
     self.wasDropped = false;
-    
+
 	self.pickup = function(){
         self.wasDropped = true;
 
@@ -212,7 +212,7 @@ function Draggable(x,y){
 			self.gotoX = self.pickupX;
 			self.gotoY = self.pickupY;
 		}else{
-			
+
 			STATS.steps++;
 			writeStats();
 
@@ -225,7 +225,7 @@ function Draggable(x,y){
 	}
 
 	var lastPressed = false;
-    
+
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //Never ending sharks - Bryan
     //Added code for box select movement functions, adapted from existing and Jeff's code
@@ -233,7 +233,7 @@ function Draggable(x,y){
         self.x = Mouse.x - self.distFromMouseX;
         self.y = Mouse.y - self.distFromMouseY;
     }
-    
+
     self.boxMoveClosest = function(){
         //Modified Jeff's code for putting down box select guys
         // Find the closest empty spot and move there
@@ -254,7 +254,7 @@ function Draggable(x,y){
 			return smallest;
 		}
 		var smallestDistance = indexOfSmallest(distances);
-        
+
         var closestSpot = emptiesSelf[smallestDistance];
         self.x = closestSpot.x;
         self.gotoX = closestSpot.x;
@@ -263,7 +263,7 @@ function Draggable(x,y){
         self.y = closestSpot.y;
         self.gotoY = closestSpot.y;
     }
-    
+
     self.updateEmpty = function(){
        emptiesSelf = [];
        for(var x=0;x<GRID_SIZE;x++){
@@ -290,16 +290,16 @@ function Draggable(x,y){
 			}
 
 		  }
-	   }   
+	   }
     }
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
+
     	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// Never Ending Sharks
 	//variable for maintaining state of a polygon
   	var was_shaking = false;
   	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
+
 	self.update = function(){
 
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -396,7 +396,7 @@ function Draggable(x,y){
 		    else{
 		    	if (squareSlider == 1) {
 		       	    if (self.color == "square") {
-		                if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
+		                if (self.sameness<BIAS_square ||self.sameness>NONCONFORM_square) {
 		                    self.shaking = true;
 		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				    // Never Ending Sharks
@@ -411,7 +411,7 @@ function Draggable(x,y){
 
 		        if (triangleSlider == 2) {
 		            if (self.color == "triangle") {
-		                if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
+		                if (self.sameness < BIAS_triangle || self.sameness > NONCONFORM_triangle) {
 		                    self.shaking = true;
 		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				    // Never Ending Sharks
@@ -425,7 +425,7 @@ function Draggable(x,y){
 		        }
 		        if (circleSlider == 3) {
 		            if (self.color == "circle") {
-		                if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
+		                if (self.sameness < BIAS_circle || self.sameness > NONCONFORM_circle) {
 		                    self.shaking = true;
 		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				    // Never Ending Sharks
@@ -442,9 +442,9 @@ function Draggable(x,y){
 			if(self.sameness>0.99){
 				self.bored = true;
 			}
-			
+
 		}
-        
+
 		// Dragging
 		if(!self.dragged){
 			if((self.shaking||window.PICK_UP_ANYONE) && Mouse.pressed && !lastPressed){
@@ -462,21 +462,21 @@ function Draggable(x,y){
 			}
 		}
 		lastPressed = Mouse.pressed;
-        
+
 		// Going to where you should
         if(self.wasDropped || START_SIM){
             self.x = self.x*0.5 + self.gotoX*0.5;
 		    self.y = self.y*0.5 + self.gotoY*0.5;
             self.wasDropped = true;
         }
-        
+
 	};
 
 	self.frame = 0;
 	self.draw = function(){
 		ctx.save();
 		ctx.translate(self.x,self.y);
-		
+
 		if(self.shaking){
 			self.frame+=0.07;
 			ctx.translate(0,20);
@@ -622,7 +622,7 @@ var oldSim = START_SIM;
 window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
-    
+
     if(Mouse.middleClick && !START_SIM){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         for(var i=0;i<draggables.length;i++){
@@ -633,8 +633,8 @@ window.render = function(){
 		  }
           draggables[i].draw();
 	   }
-    
-        //Code for drawing the inital box 
+
+        //Code for drawing the inital box
         if(Mouse.pressed /*&&  !IS_PICKING_UP*/ ){
             if(!Mouse.wasBox && Mouse.x != Mouse.origX && Mouse.y != Mouse.origY){
                 ctx.beginPath();
@@ -650,7 +650,7 @@ window.render = function(){
                 Mouse.finalY = Mouse.y;
                 Mouse.wasBox = true;
             }else{
-                Mouse.wasBox = false;  
+                Mouse.wasBox = false;
                 Mouse.boxFinished = false;
                 for(var i=0;i < draggables.length;i++){
                     var newDrag = draggables[i]
@@ -661,8 +661,8 @@ window.render = function(){
                         //newDrag.drop();
                         Mouse.middleClick = false;
                     }
-	           }   
-            
+	           }
+
             }
         }else if(!Mouse.pressed /*&& !IS_PICKING_UP*/ && !Mouse.boxFinished){
             //Check for draggable contains, uses coordinates of draggable object and the user mouse locations.
@@ -712,8 +712,8 @@ window.render = function(){
 
           draggables[i].draw();
 	   }*/
-        
-        
+
+
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	   // NEVER ENDING SHARKS
 	   //var runTime = document.getElementById("runTime");
@@ -728,13 +728,13 @@ window.render = function(){
 
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	// NEVER ENDING SHARKS   
+	// NEVER ENDING SHARKS
 	//Keeps track of last START_SIM and plays sounds if it toggles from false to true
 	if(START_SIM == true && old_sim == false){
 		sounds[1].play();
 	}
-	
-	
+
+
 	old_sim = START_SIM;
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -775,7 +775,7 @@ window.render = function(){
 
 		  if(doneBuffer==0){
 		  	 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			 // NEVER ENDING SHARKS   
+			 // NEVER ENDING SHARKS
 			 //plays a sound when the simulation completes
 		 	 sounds[2].play();
 			 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -818,7 +818,7 @@ window.render = function(){
 	   }
 
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       
+
     }
 
 }
@@ -838,8 +838,8 @@ window.writeStats = function(){
 	if(!draggables || draggables.length==0) return;
 
 	// Average Sameness Ratio
-	// Average shaking 
-	// Average bored 
+	// Average shaking
+	// Average bored
 	var total = 0;
     var total_shake = 0;
     var total_bored = 0;
