@@ -387,46 +387,51 @@ function Draggable(x,y){
 		    //  For new sliders
 		    // code to change the bias level for all three polygons
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
-		    if (squareSlider == 1) {
-		        if (self.color == "square") {
-		            if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
-		                self.shaking = true;
-		                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				 // Never Ending Sharks
-				 //plays a sound when polygon begins to shake
-		                if(!was_shaking && !START_SIM){
+            	    if(neighbors==0){
+			self.shaking = false;
+		       	}
+		    else{
+		    	if (squareSlider == 1) {
+		       	    if (self.color == "square") {
+		                if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM){
 					 sounds[4].play();
-				}
-				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
-		    }
 
-		    if (triangleSlider == 2) {
-		        if (self.color == "triangle") {
-		            if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
-		                self.shaking = true;
-		                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				 // Never Ending Sharks
-				 //plays a sound when polygon begins to shake
-		                if(!was_shaking && !START_SIM){
+		        if (triangleSlider == 2) {
+		            if (self.color == "triangle") {
+		                if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM){
 					 sounds[4].play();
-				}
-				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
-		    }
-		    if (circleSlider == 3) {
-		        if (self.color == "circle") {
-		            if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
-		                self.shaking = true;
-		                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				 // Never Ending Sharks
-				 //plays a sound when polygon begins to shake
-		                if(!was_shaking && !START_SIM){
+		        if (circleSlider == 3) {
+		            if (self.color == "circle") {
+		                if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM){
 					 sounds[4].play();
-				}
-				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
 		    }
@@ -434,9 +439,7 @@ function Draggable(x,y){
 			if(self.sameness>0.99){
 				self.bored = true;
 			}
-			if(neighbors==0){
-				self.shaking = false;
-			}
+			
 		}
         
 		// Dragging
