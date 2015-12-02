@@ -77,6 +77,58 @@ addAsset("sadCircle","../img/sad_circle.png");
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Code to allow easy addition and playing of sounds
+var sounds = {};
+function addSound(id,src){
+	sounds[id] = new Audio(src);
+	if(id == 0){
+		sounds[id].loop = true;
+	}
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Lets any sound clip be muted, differentiates between background music and sound effects
+function muteSound(name){
+	if(name == 0){
+		sounds[0].muted = !sounds[0].muted;
+		if(sounds[0].muted == true){
+			document.getElementById("muted_music").classList.add("mute_mus");
+		}
+		else{
+			document.getElementById("muted_music").classList.remove("mute_mus");
+		}
+	}
+	else{
+		for(var i = name; i < 5; i++){
+			sounds[i].muted = !sounds[i].muted;
+		}
+		if(sounds[1].muted == true){
+			document.getElementById("muted_effects").classList.add("mute_eff");
+		}
+		else{
+			document.getElementById("muted_effects").classList.remove("mute_eff");
+		}
+	}
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Adds the sounds used to the program
+addSound(0,"../music/background.mp3");
+addSound(1,"../music/start.mp3");
+addSound(2,"../music/end.mp3");
+addSound(3,"../music/grab.mp3");
+addSound(4,"../music/sad.mp3");
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 var IS_PICKING_UP = false;
 var lastMouseX, lastMouseY;
 
@@ -102,6 +154,11 @@ function Draggable(x,y){
     
 	self.pickup = function(){
         self.wasDropped = true;
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// NEVER ENDING SHARKS
+		sounds[3].play();
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		IS_PICKING_UP = true;
 
@@ -234,7 +291,24 @@ function Draggable(x,y){
     }
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
+    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// Never Ending Sharks
+	//variable for maintaining state of a polygon
+  	var was_shaking = false;
+  	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 	self.update = function(){
+
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// Never Ending Sharks
+		//keeps track of whether a polygon was shaking
+		if(self.shaking){
+			was_shaking = true;
+		}
+		else{
+			was_shaking = false;
+		}
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		// Shakiness? //shaking = unhappy
 		self.shaking = false;
@@ -313,25 +387,51 @@ function Draggable(x,y){
 		    //  For new sliders
 		    // code to change the bias level for all three polygons
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
-		    if (squareSlider == 1) {
-		        if (self.color == "square") {
-		            if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
-		                self.shaking = true;
+            	    if(neighbors==0){
+			self.shaking = false;
+		       	}
+		    else{
+		    	if (squareSlider == 1) {
+		       	    if (self.color == "square") {
+		                if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM){
+					 sounds[4].play();
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
-		    }
 
-		    if (triangleSlider == 2) {
-		        if (self.color == "triangle") {
-		            if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
-		                self.shaking = true;
+		        if (triangleSlider == 2) {
+		            if (self.color == "triangle") {
+		                if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM){
+					 sounds[4].play();
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
-		    }
-		    if (circleSlider == 3) {
-		        if (self.color == "circle") {
-		            if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
-		                self.shaking = true;
+		        if (circleSlider == 3) {
+		            if (self.color == "circle") {
+		                if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM){
+					 sounds[4].play();
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
 		    }
@@ -339,9 +439,7 @@ function Draggable(x,y){
 			if(self.sameness>0.99){
 				self.bored = true;
 			}
-			if(neighbors==0){
-				self.shaking = false;
-			}
+			
 		}
         
 		// Dragging
@@ -512,6 +610,12 @@ window.reset = function(){
 
 }
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//variable to check when simulation is complete
+var oldSim = START_SIM;
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
@@ -619,6 +723,18 @@ window.render = function(){
 	   var t1 = 0;
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS   
+	//Keeps track of last START_SIM and plays sounds if it toggles from false to true
+	if(START_SIM == true && old_sim == false){
+		sounds[1].play();
+	}
+	
+	
+	old_sim = START_SIM;
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	   // Is Stepping?
 	   if(START_SIM){
 		  step();
@@ -655,6 +771,11 @@ window.render = function(){
 
 
 		  if(doneBuffer==0){
+		  	 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			 // NEVER ENDING SHARKS   
+			 //plays a sound when the simulation completes
+		 	 sounds[2].play();
+			 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			 doneAnimFrame = 30;
 			 window.START_SIM = false;
 			 console.log("DONE");
@@ -991,5 +1112,10 @@ window.IS_IN_SIGHT = true;
 // !!!!!!!!!!!!!!!!!!!!!!!!
 
 window.onload=function(){
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS
+	//Plays the background music when the page loads
+	sounds[0].play();
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	reset();
 }
