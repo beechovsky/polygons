@@ -91,7 +91,32 @@ function addSound(id,src){
 }
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Lets any sound clip be muted, differentiates between background music and sound effects
+function muteSound(name){
+	if(name == 0){
+		sounds[0].muted = !sounds[0].muted;
+		if(sounds[0].muted == true){
+			document.getElementById("muted_music").classList.add("mute_mus");
+		}
+		else{
+			document.getElementById("muted_music").classList.remove("mute_mus");
+		}
+	}
+	else{
+		for(var i = name; i < 5; i++){
+			sounds[i].muted = !sounds[i].muted;
+		}
+		if(sounds[1].muted == true){
+			document.getElementById("muted_effects").classList.add("mute_eff");
+		}
+		else{
+			document.getElementById("muted_effects").classList.remove("mute_eff");
+		}
+	}
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 var IS_PICKING_UP = false;
