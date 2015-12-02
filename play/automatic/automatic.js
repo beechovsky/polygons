@@ -148,8 +148,12 @@ function Draggable(x,y){
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	var offsetX, offsetY;
-	var pickupX, pickupY;
+    self.pickupX = 0; 
+    self.pickupY = 0;
+    self.wasDropped = false;
+    
 	self.pickup = function(){
+        self.wasDropped = true;
 
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// NEVER ENDING SHARKS
@@ -158,8 +162,8 @@ function Draggable(x,y){
 
 		IS_PICKING_UP = true;
 
-		pickupX = (Math.floor(self.x/TILE_SIZE)+0.5)*TILE_SIZE;
-		pickupY = (Math.floor(self.y/TILE_SIZE)+0.5)*TILE_SIZE;
+		self.pickupX = (Math.floor(self.x/TILE_SIZE)+0.5)*TILE_SIZE;
+		self.pickupY = (Math.floor(self.y/TILE_SIZE)+0.5)*TILE_SIZE;
 		offsetX = Mouse.x-self.x;
 		offsetY = Mouse.y-self.y;
 		self.dragged = true;
@@ -178,6 +182,7 @@ function Draggable(x,y){
 	self.drop = function(){
 
 		IS_PICKING_UP = false;
+        self.wasDropped = true;
 
 		var px = Math.floor(Mouse.x/TILE_SIZE);
 		var py = Math.floor(Mouse.y/TILE_SIZE);
@@ -201,8 +206,8 @@ function Draggable(x,y){
 		}
 
 		if(spotTaken){
-			self.gotoX = pickupX;
-			self.gotoY = pickupY;
+			self.gotoX = self.pickupX;
+			self.gotoY = self.pickupY;
 		}else{
 			
 			STATS.steps++;
@@ -231,7 +236,7 @@ function Draggable(x,y){
         // Find the closest empty spot and move there
 		// First find and store the distances between each empty spot and the current shaker
 		var distances = [];
-		for(var i = 0; i < emptiesSelf.length; i ++){
+		for(var i = 0; i < emptiesSelf.length; i++){
 			var distanceX = Math.abs(emptiesSelf[i].x - self.x);
 			var distanceY = Math.abs(emptiesSelf[i].y - self.y);
 			var totalDistance = distanceX + distanceY;
@@ -239,8 +244,8 @@ function Draggable(x,y){
 		}
 		// This requires the following helper function:
 		function indexOfSmallest(a) {
-			var smallest = a[0];
-			for (var i = 1; i < a.length; i++) {
+			var smallest = 0;
+			for (var i = 0; i < a.length; i++) {
 				if (a[i] < a[smallest]) smallest = i;
 			}
 			return smallest;
@@ -249,7 +254,11 @@ function Draggable(x,y){
         
         var closestSpot = emptiesSelf[smallestDistance];
         self.x = closestSpot.x;
+        self.gotoX = closestSpot.x;
+        //self.pickupX = closestSpot.x;
+        //self.pickupY = closestSpot.y;
         self.y = closestSpot.y;
+        self.gotoY = closestSpot.y;
     }
     
     self.updateEmpty = function(){
@@ -429,7 +438,7 @@ function Draggable(x,y){
 				self.shaking = false;
 			}
 		}
-
+        
 		// Dragging
 		if(!self.dragged){
 			if((self.shaking||window.PICK_UP_ANYONE) && Mouse.pressed && !lastPressed){
@@ -447,11 +456,14 @@ function Draggable(x,y){
 			}
 		}
 		lastPressed = Mouse.pressed;
-
+        
 		// Going to where you should
-		self.x = self.x*0.5 + self.gotoX*0.5;
-		self.y = self.y*0.5 + self.gotoY*0.5;
-
+        if(self.wasDropped || START_SIM){
+            self.x = self.x*0.5 + self.gotoX*0.5;
+		    self.y = self.y*0.5 + self.gotoY*0.5;
+            self.wasDropped = true;
+        }
+        
 	};
 
 	self.frame = 0;
@@ -605,87 +617,97 @@ window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
     
-    if(Mouse.middleClick){
+    if(Mouse.middleClick && !START_SIM){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         for(var i=0;i<draggables.length;i++){
 		  var d = draggables[i];
 
 		  if(window.PICK_UP_ANYONE && Mouse.boxFinished && d.dragged){
             d.dragUpdate();
-		}
-        draggables[i].draw();
-	}
+		  }
+          draggables[i].draw();
+	   }
     
-    //Code for drawing the inital box 
-    if(Mouse.pressed /*&&  !IS_PICKING_UP*/ ){
-        if(!Mouse.wasBox && Mouse.x != Mouse.origX && Mouse.y != Mouse.origY){
-            ctx.beginPath();
-            ctx.lineWidth="4";
-            ctx.strokeStyle="green";
-            ctx.moveTo(Mouse.origX, Mouse.origY);
-            ctx.lineTo(Mouse.origX, Mouse.y);
-            ctx.lineTo(Mouse.x, Mouse.y);
-            ctx.lineTo(Mouse.x, Mouse.origY);
-            ctx.lineTo(Mouse.origX, Mouse.origY);
-            ctx.stroke();
-            Mouse.finalX = Mouse.x;
-            Mouse.finalY = Mouse.y;
-            Mouse.wasBox = true;
-        }else{
-            Mouse.wasBox = false;  
-            Mouse.boxFinished = false;
-            for(var i=0;i<draggables.length;i++){
-              var newDrag = draggables[i]
-              if(newDrag.dragged){
-                  newDrag.updateEmpty();
-                  newDrag.boxMoveClosest();
-                  newDrag.drop();
-                  Mouse.middleClick = false;
-              }
-	       }
-            
-        }
-    }else if(!Mouse.pressed /*&& !IS_PICKING_UP*/ && !Mouse.boxFinished){
-        //Check for draggable contains, uses coordinates of draggable object and the user mouse locations.
-        for(var i=0;i<draggables.length;i++){
-            var d = draggables[i];
-            if(Mouse.origX > Mouse.finalX && Mouse.origY > Mouse.finalY){
-                if((d.x < Mouse.origX && d.x > Mouse.finalX) && (d.y < Mouse.origY && d.y > Mouse.finalY)){
-                    IS_PICKING_UP = true;
-                    var d = draggables[i];
-                    d.dragged = true;
-                    d.distFromMouseX = Mouse.finalX - d.x;
-                    d.distFromMouseY = Mouse.finalY - d.y;
-                }
-            }else if(Mouse.origX > Mouse.finalX && Mouse.origY < Mouse.finalY){
-                if((d.x < Mouse.origX && d.x > Mouse.finalX) && (d.y > Mouse.origY && d.y < Mouse.finalY)){
-                    IS_PICKING_UP = true;
-                    var d = draggables[i];
-                    d.dragged = true;
-                    d.distFromMouseX = Mouse.finalX - d.x;
-                    d.distFromMouseY = Mouse.finalY - d.y;
-                }
-            }else if(Mouse.origX < Mouse.finalX && Mouse.origY > Mouse.finalY){
-                if((d.x > Mouse.origX && d.x < Mouse.finalX) && (d.y < Mouse.origY && d.y > Mouse.finalY)){
-                    IS_PICKING_UP = true;
-                    var d = draggables[i];
-                    d.dragged = true;
-                    d.distFromMouseX = Mouse.finalX - d.x;
-                    d.distFromMouseY = Mouse.finalY - d.y;
-                }
+        //Code for drawing the inital box 
+        if(Mouse.pressed /*&&  !IS_PICKING_UP*/ ){
+            if(!Mouse.wasBox && Mouse.x != Mouse.origX && Mouse.y != Mouse.origY){
+                ctx.beginPath();
+                ctx.lineWidth="4";
+                ctx.strokeStyle="green";
+                ctx.moveTo(Mouse.origX, Mouse.origY);
+                ctx.lineTo(Mouse.origX, Mouse.y);
+                ctx.lineTo(Mouse.x, Mouse.y);
+                ctx.lineTo(Mouse.x, Mouse.origY);
+                ctx.lineTo(Mouse.origX, Mouse.origY);
+                ctx.stroke();
+                Mouse.finalX = Mouse.x;
+                Mouse.finalY = Mouse.y;
+                Mouse.wasBox = true;
             }else{
-                if((d.x > Mouse.origX && d.x < Mouse.finalX) && (d.y > Mouse.origY && d.y < Mouse.finalY)){
-                    IS_PICKING_UP = true;
-                    var d = draggables[i];
-                    d.dragged = true;
-                    d.distFromMouseX = Mouse.finalX - d.x;
-                    d.distFromMouseY = Mouse.finalY - d.y;
-                }
+                Mouse.wasBox = false;  
+                Mouse.boxFinished = false;
+                for(var i=0;i < draggables.length;i++){
+                    var newDrag = draggables[i]
+                    if(newDrag.dragged){
+                        newDrag.updateEmpty();
+                        newDrag.boxMoveClosest();
+                        newDrag.dragged = false;
+                        //newDrag.drop();
+                        Mouse.middleClick = false;
+                    }
+	           }   
+            
             }
-	    }
-        Mouse.boxFinished = true;
-    }
+        }else if(!Mouse.pressed /*&& !IS_PICKING_UP*/ && !Mouse.boxFinished){
+            //Check for draggable contains, uses coordinates of draggable object and the user mouse locations.
+            for(var i=0;i<draggables.length;i++){
+                var d = draggables[i];
+                if(Mouse.origX > Mouse.finalX && Mouse.origY > Mouse.finalY){
+                    if((d.x < Mouse.origX && d.x > Mouse.finalX) && (d.y < Mouse.origY && d.y > Mouse.finalY)){
+                        IS_PICKING_UP = true;
+                        var d = draggables[i];
+                        d.dragged = true;
+                        d.distFromMouseX = Mouse.finalX - d.x;
+                        d.distFromMouseY = Mouse.finalY - d.y;
+                    }
+                }else if(Mouse.origX > Mouse.finalX && Mouse.origY < Mouse.finalY){
+                    if((d.x < Mouse.origX && d.x > Mouse.finalX) && (d.y > Mouse.origY && d.y < Mouse.finalY)){
+                        IS_PICKING_UP = true;
+                        var d = draggables[i];
+                        d.dragged = true;
+                        d.distFromMouseX = Mouse.finalX - d.x;
+                        d.distFromMouseY = Mouse.finalY - d.y;
+                    }
+                }else if(Mouse.origX < Mouse.finalX && Mouse.origY > Mouse.finalY){
+                    if((d.x > Mouse.origX && d.x < Mouse.finalX) && (d.y < Mouse.origY && d.y > Mouse.finalY)){
+                        IS_PICKING_UP = true;
+                        var d = draggables[i];
+                        d.dragged = true;
+                        d.distFromMouseX = Mouse.finalX - d.x;
+                        d.distFromMouseY = Mouse.finalY - d.y;
+                    }
+                }else{
+                    if((d.x > Mouse.origX && d.x < Mouse.finalX) && (d.y > Mouse.origY && d.y < Mouse.finalY)){
+                        IS_PICKING_UP = true;
+                        var d = draggables[i];
+                        d.dragged = true;
+                        d.distFromMouseX = Mouse.finalX - d.x;
+                        d.distFromMouseY = Mouse.finalY - d.y;
+                    }
+                }
+	       }
+            Mouse.boxFinished = true;
+        }
     }else{
+        /*
+         ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(var i=0;i<draggables.length;i++){
+		  var d = draggables[i];
+
+          draggables[i].draw();
+	   }*/
+        
+        
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	   // NEVER ENDING SHARKS
 	   //var runTime = document.getElementById("runTime");
@@ -790,6 +812,7 @@ window.render = function(){
 	   }
 
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       
     }
 
 }
