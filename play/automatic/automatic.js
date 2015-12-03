@@ -40,10 +40,10 @@ window.RATIO_CIRCLES_TO_SQUARES = window.RATIO_CIRCLES /window.RATIO_SQUARES;
 window.RATIO_CIRCLES_TO_TRIANGLES = window.RATIO_CIRCLES /window.RATIO_TRIANGLES;
 window.EMPTINESS = 0.25;
 
-var runTime = document.getElementById("runTime");
-runTime.innerHTML = 0;
-var numMoves = document.getElementById("numMoves");
-numMoves.innerHTML = 0;
+//var runTime = document.getElementById("runTime");
+//runTime.innerHTML = 0;
+//var numMoves = document.getElementById("numMoves");
+//numMoves.innerHTML = 0;
 //var goodMoves = document.getElementById("goodMoves");
 //goodMoves.innerHTML = 0;
 
@@ -88,6 +88,9 @@ function addSound(id,src){
 	if(id == 0){
 		sounds[id].loop = true;
 	}
+
+	sounds[0].muted = true;
+	document.getElementById("muted_music").classList.add("mute_mus");
 }
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

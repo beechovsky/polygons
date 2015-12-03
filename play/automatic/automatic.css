@@ -152,6 +152,7 @@ div{
 	float:left;
 	
 	position:relative;
+	/*background-position: 0 -104px;*/
 	top:5px;
 	left:35px;
 
