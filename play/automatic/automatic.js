@@ -401,7 +401,7 @@ function Draggable(x,y){
 		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				    // Never Ending Sharks
 				    //plays a sound when polygon begins to shake
-		                    if(!was_shaking && !START_SIM){
+		                    if(!was_shaking && !START_SIM && loaded){
 					 sounds[4].play();
 				    }
 				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -416,7 +416,7 @@ function Draggable(x,y){
 		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				    // Never Ending Sharks
 				    //plays a sound when polygon begins to shake
-		                    if(!was_shaking && !START_SIM){
+		                    if(!was_shaking && !START_SIM && loaded){
 					 sounds[4].play();
 				    }
 				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -430,7 +430,7 @@ function Draggable(x,y){
 		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				    // Never Ending Sharks
 				    //plays a sound when polygon begins to shake
-		                    if(!was_shaking && !START_SIM){
+		                    if(!was_shaking && !START_SIM && loaded){
 					 sounds[4].play();
 				    }
 				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -554,6 +554,12 @@ window.RANDOM_MOVE = true;
 
 var draggables;
 var STATS;
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+// variable to manage when all program assets are loaded
+var loaded = false;
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 window.reset = function(){
 
 	var runTime = document.getElementById("runTime");
@@ -610,7 +616,10 @@ window.reset = function(){
 		draggables[i].update();
 	}
 	writeStats();
-
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS
+	loaded = true;
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
