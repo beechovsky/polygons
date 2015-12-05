@@ -332,7 +332,7 @@ function Draggable(x,y){
 		            neighbors++;
 		            //<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		            // Never Ending Sharks
-		            // Pairwise relationship amongs the polygons
+		            // Relationship amongs the polygons
 		            if (d.color == self.color) {
 		                same++;
 		            }
@@ -854,6 +854,8 @@ window.writeStats = function(){
     var total_bored = 0;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
+	//new variables that are used a few lines down to calculate average
+	//Segergation of each shape to be used in the graph
 	var totalBlue = 0;
 	var totalYellow = 0;
 	var totalRed = 0;
@@ -871,17 +873,23 @@ window.writeStats = function(){
 		//NEVER ENDING SHARKS
 		if(d.color == "triangle"){
 			var d = draggables[i];
+			//calculates how many neighbors are like me, and adds to a running total
 			totalYellow += d.sameness || 0;
+			//adds to a total of this type of shape, allowing us to average later
 			ammountYellow++;
 			}
 		else if(d.color == "square"){
 			var d = draggables[i];
+			//calculates how many neighbors are like me, and adds to a running total
 			totalBlue += d.sameness || 0;
+			//adds to a total of this type of shape, allowing us to average later
 			ammountBlue++;
 			}
 		else if(d.color == "circle"){
 			var d = draggables[i];
+			//calculates how many neighbors are like me, and adds to a running total
 			totalRed += d.sameness || 0;
+			//adds to a total of this type of shape, allowing us to average later
 			ammountRed++;
 			}
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -892,9 +900,15 @@ window.writeStats = function(){
 
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
+
+	//this is the average Segergation of triangles
 	var avgYellow = totalYellow/ammountYellow;
+	//this is the average Segergation of Squares
 	var avgBlue = totalBlue/ammountBlue;
+	//this is the average Segergation of Circles
 	var avgRed = totalRed/ammountRed;
+
+	//these make sure to avoid NaN errors
 	if(isNaN(avgYellow)) debugger;
 	if(isNaN(avgBlue)) debugger;
 	if(isNaN(avgRed)) debugger;
@@ -925,6 +939,7 @@ window.writeStats = function(){
 	//var segregationRed = (avgRed-0.5)*2;
 	var segregationRed = avgRed;
 
+	//these three lines keep segeration from becoming negetive somehow
 	if(segregationYellow<0) segregationYellow=0;
 	if(segregationBlue<0) segregationBlue=0;
 	if(segregationRed<0) segregationRed=0;
@@ -935,15 +950,15 @@ window.writeStats = function(){
 	var x = STATS.steps - STATS.offset;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
-	//var y = 250 - segregation*250+10;
-	var y = 250 - segregationRed*250+10;
+	//var y = 250 - segregation*250+10; Old version
+	var y = 250 - segregationRed*250+10; //new version uses just red shape segeration
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	stats_ctx.fillRect(x,y,1,5);
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
 	// Text
-	//segregation_text.innerHTML = Math.floor(segregation*100)+"%";
-	segregation_text.innerHTML = Math.floor(segregationRed*100)+"%";
+	//segregation_text.innerHTML = Math.floor(segregation*100)+"%"; Old version
+	segregation_text.innerHTML = Math.floor(segregationRed*100)+"%"; //show percent segeration of red
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	segregation_text.style.top = Math.round(y-15)+"px";
 	segregation_text.style.left = Math.round(x+35)+"px";
@@ -952,7 +967,7 @@ window.writeStats = function(){
 	//y = 250 - avg_shake*250+10;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
-	y = 250 - segregationBlue*250+10;
+	y = 250 - segregationBlue*250+10; //segeration of blue for this y
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	stats_ctx.fillRect(x,y,1,5);
 	// Text
@@ -960,7 +975,7 @@ window.writeStats = function(){
         //shaking_text.innerHTML = Math.floor(avg_shake*100)+"%";
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//NEVER ENDING SHARKS
-		shaking_text.innerHTML = Math.floor(segregationBlue*100)+"%";
+		shaking_text.innerHTML = Math.floor(segregationBlue*100)+"%";//show percent segeration of blue
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         shaking_text.style.top = Math.round(y-15)+"px";
         shaking_text.style.left = Math.round(x+35)+"px";
@@ -978,7 +993,7 @@ window.writeStats = function(){
 		//bored_text.innerHTML = Math.floor(avg_bored*100)+"%";
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//NEVER ENDING SHARKS
-		bored_text.innerHTML = Math.floor(segregationYellow*100)+"%";
+		bored_text.innerHTML = Math.floor(segregationYellow*100)+"%";//show percent segeration of yellow
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		bored_text.style.top = Math.round(y-15)+"px";
 		bored_text.style.left = Math.round(x+35)+"px";
