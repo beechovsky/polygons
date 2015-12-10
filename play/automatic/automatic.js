@@ -7,7 +7,7 @@ var stats_ctx = stats_canvas.getContext("2d");
 // Never Ending Sharks
 // Variables for the new sliders
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-var NONCONFORM_square = 1.00; 
+var NONCONFORM_square = 1.00;
 var BIAS_square = 0.33;
 var NONCONFORM_triangle = 1.00;
 var BIAS_triangle = 0.33;
@@ -40,10 +40,10 @@ window.RATIO_CIRCLES_TO_SQUARES = window.RATIO_CIRCLES /window.RATIO_SQUARES;
 window.RATIO_CIRCLES_TO_TRIANGLES = window.RATIO_CIRCLES /window.RATIO_TRIANGLES;
 window.EMPTINESS = 0.25;
 
-var runTime = document.getElementById("runTime");
-runTime.innerHTML = 0;
-var numMoves = document.getElementById("numMoves");
-numMoves.innerHTML = 0;
+//var runTime = document.getElementById("runTime");
+//runTime.innerHTML = 0;
+//var numMoves = document.getElementById("numMoves");
+//numMoves.innerHTML = 0;
 //var goodMoves = document.getElementById("goodMoves");
 //goodMoves.innerHTML = 0;
 
@@ -77,18 +77,73 @@ addAsset("sadCircle","../img/sad_circle.png");
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Code to allow easy addition and playing of sounds
+var sounds = {};
+function addSound(id,src){
+	sounds[id] = new Audio(src);
+	if(id == 0){
+		sounds[id].loop = true;
+	}
+
+	sounds[0].muted = true;
+	document.getElementById("muted_music").classList.add("mute_mus");
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Lets any sound clip be muted, differentiates between background music and sound effects
+function muteSound(name){
+	if(name == 0){
+		sounds[0].muted = !sounds[0].muted;
+		if(sounds[0].muted == true){
+			document.getElementById("muted_music").classList.add("mute_mus");
+		}
+		else{
+			document.getElementById("muted_music").classList.remove("mute_mus");
+		}
+	}
+	else{
+		for(var i = name; i < 5; i++){
+			sounds[i].muted = !sounds[i].muted;
+		}
+		if(sounds[1].muted == true){
+			document.getElementById("muted_effects").classList.add("mute_eff");
+		}
+		else{
+			document.getElementById("muted_effects").classList.remove("mute_eff");
+		}
+	}
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//Adds the sounds used to the program
+addSound(0,"../music/background.mp3");
+addSound(1,"../music/start.mp3");
+addSound(2,"../music/end.mp3");
+addSound(3,"../music/grab.mp3");
+addSound(4,"../music/sad.mp3");
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 var IS_PICKING_UP = false;
 var lastMouseX, lastMouseY;
 
 function Draggable(x,y){
-	
+
 	var self = this;
 	self.x = x;
 	self.y = y;
 	self.gotoX = x;
 	self.gotoY = y;
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //Never ending sharks - Bryan 
+    //Never ending sharks - Bryan
     //Variables needed for box select code
     self.distFromMouseX = 0;
     self.distFromMouseY = 0;
@@ -96,12 +151,17 @@ function Draggable(x,y){
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	var offsetX, offsetY;
-    self.pickupX = 0; 
+    self.pickupX = 0;
     self.pickupY = 0;
     self.wasDropped = false;
-    
+
 	self.pickup = function(){
         self.wasDropped = true;
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// NEVER ENDING SHARKS
+		sounds[3].play();
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		IS_PICKING_UP = true;
 
@@ -152,7 +212,7 @@ function Draggable(x,y){
 			self.gotoX = self.pickupX;
 			self.gotoY = self.pickupY;
 		}else{
-			
+
 			STATS.steps++;
 			writeStats();
 
@@ -165,7 +225,7 @@ function Draggable(x,y){
 	}
 
 	var lastPressed = false;
-    
+
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //Never ending sharks - Bryan
     //Added code for box select movement functions, adapted from existing and Jeff's code
@@ -173,7 +233,7 @@ function Draggable(x,y){
         self.x = Mouse.x - self.distFromMouseX;
         self.y = Mouse.y - self.distFromMouseY;
     }
-    
+
     self.boxMoveClosest = function(){
         //Modified Jeff's code for putting down box select guys
         // Find the closest empty spot and move there
@@ -194,7 +254,7 @@ function Draggable(x,y){
 			return smallest;
 		}
 		var smallestDistance = indexOfSmallest(distances);
-        
+
         var closestSpot = emptiesSelf[smallestDistance];
         self.x = closestSpot.x;
         self.gotoX = closestSpot.x;
@@ -203,7 +263,7 @@ function Draggable(x,y){
         self.y = closestSpot.y;
         self.gotoY = closestSpot.y;
     }
-    
+
     self.updateEmpty = function(){
        emptiesSelf = [];
        for(var x=0;x<GRID_SIZE;x++){
@@ -230,11 +290,28 @@ function Draggable(x,y){
 			}
 
 		  }
-	   }   
+	   }
     }
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
+
+    	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// Never Ending Sharks
+	//variable for maintaining state of a polygon
+  	var was_shaking = false;
+  	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	self.update = function(){
+
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// Never Ending Sharks
+		//keeps track of whether a polygon was shaking
+		if(self.shaking){
+			was_shaking = true;
+		}
+		else{
+			was_shaking = false;
+		}
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		// Shakiness? //shaking = unhappy
 		self.shaking = false;
@@ -255,7 +332,7 @@ function Draggable(x,y){
 		            neighbors++;
 		            //<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		            // Never Ending Sharks
-		            // Pairwise relationship amongs the polygons
+		            // Relationship amongs the polygons
 		            if (d.color == self.color) {
 		                same++;
 		            }
@@ -313,25 +390,51 @@ function Draggable(x,y){
 		    //  For new sliders
 		    // code to change the bias level for all three polygons
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
-		    if (squareSlider == 1) {
-		        if (self.color == "square") {
-		            if (self.samenessOfTriangle<BIAS_square ||self.samenessOfCircle>NONCONFORM_square) {
-		                self.shaking = true;
+            	    if(neighbors==0){
+			self.shaking = false;
+		       	}
+		    else{
+		    	if (squareSlider == 1) {
+		       	    if (self.color == "square") {
+		                if (self.sameness<BIAS_square ||self.sameness>NONCONFORM_square) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM && loaded){
+					 sounds[4].play();
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
-		    }
 
-		    if (triangleSlider == 2) {
-		        if (self.color == "triangle") {
-		            if (self.samenessOfCircle < BIAS_triangle || self.samenessOfSquare > NONCONFORM_triangle) {
-		                self.shaking = true;
+		        if (triangleSlider == 2) {
+		            if (self.color == "triangle") {
+		                if (self.sameness < BIAS_triangle || self.sameness > NONCONFORM_triangle) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM && loaded){
+					 sounds[4].play();
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
-		    }
-		    if (circleSlider == 3) {
-		        if (self.color == "circle") {
-		            if (self.samenessOfSquare < BIAS_circle || self.samenessOfTriangle > NONCONFORM_circle) {
-		                self.shaking = true;
+		        if (circleSlider == 3) {
+		            if (self.color == "circle") {
+		                if (self.sameness < BIAS_circle || self.sameness > NONCONFORM_circle) {
+		                    self.shaking = true;
+		                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				    // Never Ending Sharks
+				    //plays a sound when polygon begins to shake
+		                    if(!was_shaking && !START_SIM && loaded){
+					 sounds[4].play();
+				    }
+				    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		                }
 		            }
 		        }
 		    }
@@ -339,11 +442,9 @@ function Draggable(x,y){
 			if(self.sameness>0.99){
 				self.bored = true;
 			}
-			if(neighbors==0){
-				self.shaking = false;
-			}
+
 		}
-        
+
 		// Dragging
 		if(!self.dragged){
 			if((self.shaking||window.PICK_UP_ANYONE) && Mouse.pressed && !lastPressed){
@@ -361,21 +462,21 @@ function Draggable(x,y){
 			}
 		}
 		lastPressed = Mouse.pressed;
-        
+
 		// Going to where you should
         if(self.wasDropped || START_SIM){
             self.x = self.x*0.5 + self.gotoX*0.5;
 		    self.y = self.y*0.5 + self.gotoY*0.5;
             self.wasDropped = true;
         }
-        
+
 	};
 
 	self.frame = 0;
 	self.draw = function(){
 		ctx.save();
 		ctx.translate(self.x,self.y);
-		
+
 		if(self.shaking){
 			self.frame+=0.07;
 			ctx.translate(0,20);
@@ -453,6 +554,12 @@ window.RANDOM_MOVE = true;
 
 var draggables;
 var STATS;
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+// variable to manage when all program assets are loaded
+var loaded = false;
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 window.reset = function(){
 
 	var runTime = document.getElementById("runTime");
@@ -509,13 +616,22 @@ window.reset = function(){
 		draggables[i].update();
 	}
 	writeStats();
-
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS
+	loaded = true;
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NEVER ENDING SHARKS
+//variable to check when simulation is complete
+var oldSim = START_SIM;
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
-    
+
     if(Mouse.middleClick && !START_SIM){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         for(var i=0;i<draggables.length;i++){
@@ -526,8 +642,8 @@ window.render = function(){
 		  }
           draggables[i].draw();
 	   }
-    
-        //Code for drawing the inital box 
+
+        //Code for drawing the inital box
         if(Mouse.pressed /*&&  !IS_PICKING_UP*/ ){
             if(!Mouse.wasBox && Mouse.x != Mouse.origX && Mouse.y != Mouse.origY){
                 ctx.beginPath();
@@ -543,7 +659,7 @@ window.render = function(){
                 Mouse.finalY = Mouse.y;
                 Mouse.wasBox = true;
             }else{
-                Mouse.wasBox = false;  
+                Mouse.wasBox = false;
                 Mouse.boxFinished = false;
                 for(var i=0;i < draggables.length;i++){
                     var newDrag = draggables[i]
@@ -554,8 +670,8 @@ window.render = function(){
                         //newDrag.drop();
                         Mouse.middleClick = false;
                     }
-	           }   
-            
+	           }
+
             }
         }else if(!Mouse.pressed /*&& !IS_PICKING_UP*/ && !Mouse.boxFinished){
             //Check for draggable contains, uses coordinates of draggable object and the user mouse locations.
@@ -605,8 +721,8 @@ window.render = function(){
 
           draggables[i].draw();
 	   }*/
-        
-        
+
+
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	   // NEVER ENDING SHARKS
 	   //var runTime = document.getElementById("runTime");
@@ -618,6 +734,18 @@ window.render = function(){
 	   var t0 = 0;
 	   var t1 = 0;
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS
+	//Keeps track of last START_SIM and plays sounds if it toggles from false to true
+	if(START_SIM == true && old_sim == false){
+		sounds[1].play();
+	}
+
+
+	old_sim = START_SIM;
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	   // Is Stepping?
 	   if(START_SIM){
@@ -655,6 +783,11 @@ window.render = function(){
 
 
 		  if(doneBuffer==0){
+		  	 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			 // NEVER ENDING SHARKS
+			 //plays a sound when the simulation completes
+		 	 sounds[2].play();
+			 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			 doneAnimFrame = 30;
 			 window.START_SIM = false;
 			 console.log("DONE");
@@ -694,7 +827,7 @@ window.render = function(){
 	   }
 
 	   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       
+
     }
 
 }
@@ -714,13 +847,15 @@ window.writeStats = function(){
 	if(!draggables || draggables.length==0) return;
 
 	// Average Sameness Ratio
-	// Average shaking 
-	// Average bored 
+	// Average shaking
+	// Average bored
 	var total = 0;
     var total_shake = 0;
     var total_bored = 0;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
+	//new variables that are used a few lines down to calculate average
+	//Segergation of each shape to be used in the graph
 	var totalBlue = 0;
 	var totalYellow = 0;
 	var totalRed = 0;
@@ -738,17 +873,23 @@ window.writeStats = function(){
 		//NEVER ENDING SHARKS
 		if(d.color == "triangle"){
 			var d = draggables[i];
+			//calculates how many neighbors are like me, and adds to a running total
 			totalYellow += d.sameness || 0;
+			//adds to a total of this type of shape, allowing us to average later
 			ammountYellow++;
 			}
 		else if(d.color == "square"){
 			var d = draggables[i];
+			//calculates how many neighbors are like me, and adds to a running total
 			totalBlue += d.sameness || 0;
+			//adds to a total of this type of shape, allowing us to average later
 			ammountBlue++;
 			}
 		else if(d.color == "circle"){
 			var d = draggables[i];
+			//calculates how many neighbors are like me, and adds to a running total
 			totalRed += d.sameness || 0;
+			//adds to a total of this type of shape, allowing us to average later
 			ammountRed++;
 			}
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -759,9 +900,15 @@ window.writeStats = function(){
 
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
+
+	//this is the average Segergation of triangles
 	var avgYellow = totalYellow/ammountYellow;
+	//this is the average Segergation of Squares
 	var avgBlue = totalBlue/ammountBlue;
+	//this is the average Segergation of Circles
 	var avgRed = totalRed/ammountRed;
+
+	//these make sure to avoid NaN errors
 	if(isNaN(avgYellow)) debugger;
 	if(isNaN(avgBlue)) debugger;
 	if(isNaN(avgRed)) debugger;
@@ -792,6 +939,7 @@ window.writeStats = function(){
 	//var segregationRed = (avgRed-0.5)*2;
 	var segregationRed = avgRed;
 
+	//these three lines keep segeration from becoming negetive somehow
 	if(segregationYellow<0) segregationYellow=0;
 	if(segregationBlue<0) segregationBlue=0;
 	if(segregationRed<0) segregationRed=0;
@@ -802,15 +950,15 @@ window.writeStats = function(){
 	var x = STATS.steps - STATS.offset;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
-	//var y = 250 - segregation*250+10;
-	var y = 250 - segregationRed*250+10;
+	//var y = 250 - segregation*250+10; Old version
+	var y = 250 - segregationRed*250+10; //new version uses just red shape segeration
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	stats_ctx.fillRect(x,y,1,5);
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
 	// Text
-	//segregation_text.innerHTML = Math.floor(segregation*100)+"%";
-	segregation_text.innerHTML = Math.floor(segregationRed*100)+"%";
+	//segregation_text.innerHTML = Math.floor(segregation*100)+"%"; Old version
+	segregation_text.innerHTML = Math.floor(segregationRed*100)+"%"; //show percent segeration of red
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	segregation_text.style.top = Math.round(y-15)+"px";
 	segregation_text.style.left = Math.round(x+35)+"px";
@@ -819,7 +967,7 @@ window.writeStats = function(){
 	//y = 250 - avg_shake*250+10;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//NEVER ENDING SHARKS
-	y = 250 - segregationBlue*250+10;
+	y = 250 - segregationBlue*250+10; //segeration of blue for this y
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	stats_ctx.fillRect(x,y,1,5);
 	// Text
@@ -827,7 +975,7 @@ window.writeStats = function(){
         //shaking_text.innerHTML = Math.floor(avg_shake*100)+"%";
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//NEVER ENDING SHARKS
-		shaking_text.innerHTML = Math.floor(segregationBlue*100)+"%";
+		shaking_text.innerHTML = Math.floor(segregationBlue*100)+"%";//show percent segeration of blue
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         shaking_text.style.top = Math.round(y-15)+"px";
         shaking_text.style.left = Math.round(x+35)+"px";
@@ -845,7 +993,7 @@ window.writeStats = function(){
 		//bored_text.innerHTML = Math.floor(avg_bored*100)+"%";
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//NEVER ENDING SHARKS
-		bored_text.innerHTML = Math.floor(segregationYellow*100)+"%";
+		bored_text.innerHTML = Math.floor(segregationYellow*100)+"%";//show percent segeration of yellow
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		bored_text.style.top = Math.round(y-15)+"px";
 		bored_text.style.left = Math.round(x+35)+"px";
@@ -991,5 +1139,10 @@ window.IS_IN_SIGHT = true;
 // !!!!!!!!!!!!!!!!!!!!!!!!
 
 window.onload=function(){
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER ENDING SHARKS
+	//Plays the background music when the page loads
+	sounds[0].play();
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	reset();
 }

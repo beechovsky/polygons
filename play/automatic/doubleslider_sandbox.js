@@ -8,9 +8,9 @@ var nonconform_text_square = document.getElementById("nonconform_text_square");
 
 var square = new DoubleSlider(document.getElementById("slider_square"),{
     backgrounds:[
-        {color:"#FFDD56",icon:"ds_sad.png"},
+        {color:"#000000",icon:"ds_sad.png"},
         { color: "#567DFF", icon: "ds_happy.png" },
-        {color:"#FF0000",icon:"ds_sad.png"}
+        {color:"#000000",icon:"ds_sad.png"}
     ],
     values:[0.20,0.80],
     onChange:function(values){
@@ -25,7 +25,7 @@ var square = new DoubleSlider(document.getElementById("slider_square"),{
         nonconform_text_square.innerHTML = Math.round(window.NONCONFORM_square*100)+"%";
 
     },
-    
+
     });
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // Never Ending Sharks
@@ -36,9 +36,9 @@ var nonconform_text_triangle = document.getElementById("nonconform_text_triangle
 
 var triangle = new DoubleSlider(document.getElementById("slider_triangle"), {
     backgrounds: [
-        { color: "#FF0000", icon: "ds_sad.png" },
+        { color: "#000000", icon: "ds_sad.png" },
         { color: "#FFDD56", icon: "ds_happy.png" },
-        { color: "#567DFF", icon: "ds_sad.png" }
+        { color: "#000000", icon: "ds_sad.png" }
     ],
     values: [0.20, 0.80],
     onChange: function (values) {
@@ -53,17 +53,17 @@ var triangle = new DoubleSlider(document.getElementById("slider_triangle"), {
         nonconform_text_triangle.innerHTML = Math.round(window.NONCONFORM_triangle * 100) + "%";
 
     },
-   
-    
+
+
 });
 var bias_text_circle = document.getElementById("bias_text_circle");
 var nonconform_text_circle = document.getElementById("nonconform_text_circle");
 
 var circle = new DoubleSlider(document.getElementById("slider_circle"), {
     backgrounds: [
-        { color: "#567DFF", icon: "ds_sad.png" },
+        { color: "#000000", icon: "ds_sad.png" },
         { color: "#FF0000", icon: "ds_happy.png" },
-        { color: "#FFDD56", icon: "ds_sad.png" }
+        { color: "#000000", icon: "ds_sad.png" }
     ],
     values: [0.20, 0.80],
     onChange: function (values) {
@@ -78,7 +78,7 @@ var circle = new DoubleSlider(document.getElementById("slider_circle"), {
         nonconform_text_circle.innerHTML = Math.round(window.NONCONFORM_circle * 100) + "%";
 
     },
-    
+
 });
 
 
