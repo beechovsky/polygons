@@ -15,8 +15,8 @@ var square = new DoubleSlider(document.getElementById("slider_square"),{
     ],
     values:[0.20,0.80],
     onChange:function(values){
-	//show bias values on the slider
-        window.BIAS_square = values[0];
+	    //show bias values on the slider
+	    window.BIAS_square = values[0];
         window.NONCONFORM_square = values[1];
         window.squareSlider = 1;
         // Write stats
@@ -43,7 +43,7 @@ var triangle = new DoubleSlider(document.getElementById("slider_triangle"), {
     ],
     values: [0.20, 0.80],
     onChange: function (values) {
-	//show bias values on the slider
+	    //show bias values on the slider
         window.BIAS_triangle = values[0];
         window.NONCONFORM_triangle = values[1];
         window.triangleSlider = 2;
@@ -70,7 +70,7 @@ var circle = new DoubleSlider(document.getElementById("slider_circle"), {
     ],
     values: [0.20, 0.80],
     onChange: function (values) {
-	//show bias values on the slider
+	    //show bias values on the slider
         window.BIAS_circle = values[0];
         window.NONCONFORM_circle = values[1];
         window.circleSlider = 3;
@@ -85,7 +85,7 @@ var circle = new DoubleSlider(document.getElementById("slider_circle"), {
 });
 
 
-
+//added ratio value of circle polygon on the population slider
 var whatever = new NSlider(document.getElementById("slider2"),{
     backgrounds:[
         {color:"#FFDD56",icon:"ds_happy.png"},
@@ -104,13 +104,13 @@ var whatever = new NSlider(document.getElementById("slider2"),{
         var VALUE_1 = values[0];
         var VALUE_2 = values[1];
         var VALUE_3 = values[2];
-	//show values on the slider
+    	//show values on the slider
         window.EMPTINESS = 1-VALUE_3;
         window.RATIO_TRIANGLES = VALUE_1;
         window.RATIO_SQUARES = (VALUE_2-VALUE_1);
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // NEVER ENDING SHARKS
-	// added ratio value for circle polygon on the slider
+	    // added ratio value for circle polygon on the slider
         window.RATIO_CIRCLES = (VALUE_3-VALUE_2);
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
