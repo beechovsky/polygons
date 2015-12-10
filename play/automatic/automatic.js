@@ -229,11 +229,14 @@ function Draggable(x,y){
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //Never ending sharks - Bryan
     //Added code for box select movement functions, adapted from existing and Jeff's code
+    //DragUpdate - Moves each polygon to an offset from the mouse position.
     self.dragUpdate = function(){
         self.x = Mouse.x - self.distFromMouseX;
         self.y = Mouse.y - self.distFromMouseY;
     }
 
+    //BoxMoveClosest - Moves the polygon to the closest empty spot
+    //Implementation explained in further detail below
     self.boxMoveClosest = function(){
         //Modified Jeff's code for putting down box select guys
         // Find the closest empty spot and move there
@@ -255,6 +258,7 @@ function Draggable(x,y){
 		}
 		var smallestDistance = indexOfSmallest(distances);
 
+        //Return the closest spot and place the polygon there.
         var closestSpot = emptiesSelf[smallestDistance];
         self.x = closestSpot.x;
         self.gotoX = closestSpot.x;
@@ -264,17 +268,20 @@ function Draggable(x,y){
         self.gotoY = closestSpot.y;
     }
 
+    //UpdateEmpty - Return a list of all empty spots on the board
     self.updateEmpty = function(){
        emptiesSelf = [];
+        //For every spot
        for(var x=0;x<GRID_SIZE;x++){
 		  for(var y=0;y<GRID_SIZE;y++){
-
+            //Calculate spot position
 			var spot = {
 				x: (x+0.5)*TILE_SIZE,
 				y: (y+0.5)*TILE_SIZE
 			}
-
+            //Initially set to false
 			var spotTaken = false;
+            //Check all draggables to see if they are there
 			for(var i=0;i<draggables.length;i++){
 				var d = draggables[i];
 				var dx = d.x-spot.x;
@@ -284,7 +291,7 @@ function Draggable(x,y){
 					break;
 				}
 			}
-
+            //If no polygon is in the spot, it is an empty spot!
 			if(!spotTaken){
 				emptiesSelf.push(spot);
 			}
@@ -632,8 +639,12 @@ window.render = function(){
 
 	if(assetsLeft>0 || !draggables) return;
 
+    //All box select code is wrapped inside this if statement
+    //this is because it does not affect the rest of the simulation
     if(Mouse.middleClick && !START_SIM){
+        //Clear screen
         ctx.clearRect(0,0,canvas.width,canvas.height);
+        //Iterate over polygons and update position if it was box dragged
         for(var i=0;i<draggables.length;i++){
 		  var d = draggables[i];
 
